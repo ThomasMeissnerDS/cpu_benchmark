@@ -3,6 +3,7 @@ use std::f64;
 use std::env;
 use std::time::Instant;
 use std::thread::available_parallelism;
+use indicatif::ProgressBar;
 
 
 fn cpu_info() -> () {
@@ -36,7 +37,6 @@ fn cpu_info() -> () {
     }
 }
 
-
 fn add_one_loop(&n_loops: &u64) -> () {
     for _in in 0..n_loops {
         let _ = 100.0 * 100.0;
@@ -48,7 +48,7 @@ fn main() {
     let num_calcs_arg: Option<&String> = args.get(1);
     let num_calcs: u64 = match num_calcs_arg {
         Some(num_calcs_arg) => num_calcs_arg.trim().parse::<u64>().unwrap(),
-        None => 40000000000,
+        None => 400000000, // runs 100 times
     };
     cpu_info();
 
@@ -57,17 +57,22 @@ fn main() {
     let iter_per_core: u64 = num_calcs / available_cores;
 
     let now = Instant::now();
-    let mut results = Vec::new();
-    let mut threads = Vec::new();
-    let range: Vec<u64> = (0..available_cores).collect();
-    for _i in range {
-        threads.push(std::thread::spawn(move || {
-            add_one_loop(&iter_per_core)
-        }));
+
+    let bar = ProgressBar::new(100);
+    for _i in 0..100 {
+        let mut results = Vec::new();
+        let mut threads = Vec::new();
+        for _i in 0..available_cores {
+            threads.push(std::thread::spawn(move || {
+                add_one_loop(&iter_per_core)
+            }));
+        }
+        for thread in threads {
+            results.extend(thread.join());
+        };
+        bar.inc(1);
     }
-    for thread in threads {
-        results.extend(thread.join());
-    };
+    bar.finish();
     let elapsed = now.elapsed();
     let calc_per_sec: f64 = (num_calcs as f64) / (elapsed.as_secs() as f64);
     println!("Total runtime: {:.2?}", elapsed);
