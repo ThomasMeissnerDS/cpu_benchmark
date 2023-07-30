@@ -11,7 +11,12 @@ fn add_one_loop(&n_loops: &u64) -> () {
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let num_calcs = *(&args[1].trim().parse::<u64>().unwrap());
+    let num_calcs_arg: Option<&String> = args.get(1);
+    let num_calcs: u64 = match num_calcs_arg {
+        Some(num_calcs_arg) => num_calcs_arg.trim().parse::<u64>().unwrap(),
+        None => 20000000000,
+    };
+
     let available_cores: u64 = available_parallelism().unwrap().get()  as u64;  // get info how many threads we can use and use half of them
     let iter_per_core: u64 = num_calcs / available_cores;
 
