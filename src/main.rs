@@ -1,10 +1,9 @@
-use std::fs;
-use std::f64;
-use std::env;
-use std::time::Instant;
-use std::thread::available_parallelism;
 use indicatif::ProgressBar;
-
+use std::env;
+use std::f64;
+use std::fs;
+use std::thread::available_parallelism;
+use std::time::Instant;
 
 fn cpu_info() -> () {
     let cpuinfo = fs::read_to_string("/proc/cpuinfo").unwrap();
@@ -52,7 +51,7 @@ fn main() {
     };
     cpu_info();
 
-    let available_cores: u64 = available_parallelism().unwrap().get() as u64;  // get info how many threads we can use and use half of them
+    let available_cores: u64 = available_parallelism().unwrap().get() as u64; // get info how many threads we can use and use half of them
     let iter_per_core: u64 = num_calcs / available_cores;
 
     let now = Instant::now();
@@ -62,13 +61,11 @@ fn main() {
         let mut results = Vec::new();
         let mut threads = Vec::new();
         for _i in 0..available_cores {
-            threads.push(std::thread::spawn(move || {
-                add_one_loop(&iter_per_core)
-            }));
+            threads.push(std::thread::spawn(move || add_one_loop(&iter_per_core)));
         }
         for thread in threads {
             results.extend(thread.join());
-        };
+        }
         bar.inc(1);
     }
     bar.finish();
