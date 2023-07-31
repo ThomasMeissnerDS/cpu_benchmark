@@ -3,7 +3,7 @@ name: Build Executables
 on:
   push:
     branches:
-      - main  # Adjust this branch name to your main branch name
+      - master  # Adjust this branch name to your main branch name
 
 jobs:
   build:
