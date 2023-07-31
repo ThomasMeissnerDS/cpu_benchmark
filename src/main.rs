@@ -5,7 +5,7 @@ use std::fs;
 use std::thread::available_parallelism;
 use std::time::Instant;
 
-fn cpu_info() -> () {
+fn cpu_info() {
     let cpuinfo = fs::read_to_string("/proc/cpuinfo").unwrap();
     let mut cpu_num = 1;
 
@@ -36,7 +36,7 @@ fn cpu_info() -> () {
     }
 }
 
-fn add_one_loop(&n_loops: &u64) -> () {
+fn add_one_loop(&n_loops: &u64) {
     for _in in 0..n_loops {
         let _ = 100.0 * 100.0;
     }
