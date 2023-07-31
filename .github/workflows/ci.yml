@@ -13,6 +13,7 @@ env:
 
 jobs:
   check:
+    permissions: write-all
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
