@@ -1,60 +1,50 @@
-name: 'Release'
+name: Build Executables
 
 on:
   push:
-    tags:
-      - 'v*'
-
-env:
-  CARGO_INCREMENTAL: 0
+    branches:
+      - main  # Adjust this branch name to your main branch name
 
 jobs:
   build:
-    name: Binary
-    strategy:
-      fail-fast: false
-      matrix:
-        job:
-          - { target: x86_64-unknown-linux-musl, exe: amd64-linux, os: ubuntu-latest, features: default }
-          - { target: aarch64-unknown-linux-musl, exe: aarch64-linux,  os: ubuntu-latest, features: default }
-          - { target: armv7-unknown-linux-musleabi, exe: armv7-linux, os: ubuntu-latest, features: default }
-          - { target: wasm32-wasi, exe: wasi.wasm, os: ubuntu-latest, features: "" }
-          - { target: x86_64-apple-darwin, exe: macos, os: macos-latest, features: default }
-          - { target: x86_64-pc-windows-msvc, exe: windows.exe, os: windows-2019, features: default }
-    runs-on: ${{ matrix.job.os }}
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - name: Set up Rust
+        uses: actions/checkout@v2
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
         with:
-          profile: minimal
-          toolchain: 1.62.0
-          override: true
-          target: ${{ matrix.job.target }}
-          components: rust-src
-      - uses: actions-rs/cargo@v1
-        with:
-          use-cross: true
-          args: --release --target=${{ matrix.job.target }} --locked
-          command: build
-      - name: Rename result
-        run: |
-          rm target/${{ matrix.job.target }}/release/cpu-benchmark.d
-          cp target/${{ matrix.job.target }}/release/cpu-benchmark* cpu-benchmark-${{ matrix.job.exe }}
+          toolchain: stable
 
-      - name: Archive production artifacts
+      - name: Build for Linux
+        run: cargo build --release
+
+      - name: Archive Linux executable
+        run: mv target/release/cpu_benchmark ./cpu_benchmark_linux
+        if: ${{ success() }}
+
+      - name: Install mingw
+        run: sudo apt-get update && sudo apt-get install -y mingw-w64
+
+      - name: Build for Windows
+        run: cargo build --target x86_64-pc-windows-gnu --release
+
+      - name: Archive Windows executable
+        run: mv target/x86_64-pc-windows-gnu/release/cpu_benchmark.exe ./cpu_benchmark_windows.exe
+        if: ${{ success() }}
+
+      - name: Build for macOS
+        run: cargo build --target x86_64-apple-darwin --release
+
+      - name: Archive macOS executable
+        run: mv target/x86_64-apple-darwin/release/cpu_benchmark ./cpu_benchmark_macos
+        if: ${{ success() }}
+
+      - name: Save artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: arty
-          path: cpu-benchmark-${{ matrix.job.exe }}
-
-  #cargo-publish:
-  #  runs-on: ubuntu-20.04
-  #  needs: build
-  #  steps:
-  #    - uses: actions/checkout@v3
-
-  #    - name: Cargo publish
-  #      run: |
-  #        git config --global user.email "runner@gha.local"
-  #        git config --global user.name "Github Action"
-  #        cargo publish --allow-dirty --token ${{ secrets.CRATES_IO_TOKEN }}
+          name: executables
+          path: |
+            cpu_benchmark_linux
+            cpu_benchmark_windows.exe
+            cpu_benchmark_macos
