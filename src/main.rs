@@ -53,7 +53,7 @@ fn main() {
     cpu_info();
 
 
-    let available_cores: u64 = available_parallelism().unwrap().get()  as u64;  // get info how many threads we can use and use half of them
+    let available_cores: u64 = available_parallelism().unwrap().get() as u64;  // get info how many threads we can use and use half of them
     let iter_per_core: u64 = num_calcs / available_cores;
 
     let now = Instant::now();
