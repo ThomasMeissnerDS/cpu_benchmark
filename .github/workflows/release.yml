@@ -38,6 +38,7 @@ jobs:
 
       - name: Add macOS target
         run: rustup target add x86_64-apple-darwin
+        if: ${{ success() }}
 
       - name: Install macOS cross-compilation tools
         run: rustup target add x86_64-apple-darwin
@@ -57,6 +58,9 @@ jobs:
 
       - name: Install macOS dependency
         run: sudo apt-get install -y cmake g++-multilib
+
+      - name: Build for macOS
+        run: cargo build --target x86_64-apple-darwin --release
 
       - name: Check target contents (macOS)
         run: ls target/x86_64-apple-darwin/release/
