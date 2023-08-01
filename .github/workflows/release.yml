@@ -46,6 +46,9 @@ jobs:
       - name: Debug List target contents
         run: ls target/
 
+      - name: Debug List available Rust targets
+        run: rustup target list
+
       - name: Install macOS dependency
         run: sudo apt-get install -y cmake g++-multilib
 
