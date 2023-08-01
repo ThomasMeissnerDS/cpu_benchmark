@@ -59,9 +59,6 @@ jobs:
       - name: Install macOS dependency
         run: sudo apt-get install -y cmake g++-multilib
 
-      - name: Install osxcross
-        run: git clone --depth 1 https://github.com/tpoechtrager/osxcross $HOME/osxcross && UNATTENDED=yes OSX_VERSION_MIN=10.7 $HOME/osxcross/build.sh
-
       - name: Set up macOS cross-compilation using Docker
         run: docker run --rm -v $PWD:/volume -w /volume ekidd/rust-musl-builder:nightly cargo build --target x86_64-apple-darwin --release
 
