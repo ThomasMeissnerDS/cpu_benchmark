@@ -49,6 +49,7 @@ fn main() {
         Some(num_calcs_arg) => num_calcs_arg.trim().parse::<u64>().unwrap(),
         None => 400000000, // runs 100 times
     };
+    println!("Running {} calculations for 100 times split across all cores.", &num_calcs);
     cpu_info();
 
     let available_cores: u64 = available_parallelism().unwrap().get() as u64; // get info how many threads we can use and use half of them
