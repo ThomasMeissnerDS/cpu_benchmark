@@ -29,9 +29,6 @@ jobs:
       - name: Add Windows GNU target
         run: rustup target add x86_64-pc-windows-gnu
 
-      - name: Add macOS target
-        run: rustup target add x86_64-apple-darwin
-
       - name: Build for Windows
         run: cargo build --target x86_64-pc-windows-gnu --release
 
@@ -39,8 +36,14 @@ jobs:
         run: mv target/x86_64-pc-windows-gnu/release/cpu_benchmark.exe ./cpu_benchmark_windows.exe
         if: ${{ success() }}
 
+      - name: Add macOS target
+        run: rustup target add x86_64-apple-darwin
+
       - name: Build for macOS
-        run: cargo build --target x86_64-apple-darwin --release
+        uses: peaceiris/actions-macOS-cross-compile@v1
+        with:
+          image: ubuntu-latest
+          args: cargo build --target x86_64-apple-darwin --release
 
       - name: Archive macOS executable
         run: mv target/x86_64-apple-darwin/release/cpu_benchmark ./cpu_benchmark_macos
