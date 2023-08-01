@@ -36,14 +36,6 @@ jobs:
         run: mv target/x86_64-pc-windows-gnu/release/cpu_benchmark.exe ./cpu_benchmark_windows.exe
         if: ${{ success() }}
 
-      - name: Add macOS target
-        run: rustup target add x86_64-apple-darwin
-        if: ${{ success() }}
-
-      - name: Install macOS cross-compilation tools
-        run: rustup target add x86_64-apple-darwin
-        if: ${{ success() }}
-
       - name: Debug List target contents
         run: ls target/
 
@@ -55,16 +47,6 @@ jobs:
 
       - name: Debug Check Cargo configuration
         run: cargo --version; rustc --version; rustup show
-
-      - name: Install macOS dependency
-        run: sudo apt-get install -y cmake g++-multilib
-
-      - name: Set up macOS cross-compilation using Docker
-        run: docker run --rm -v $PWD:/volume -w /volume ekidd/rust-musl-builder:nightly cargo build --target x86_64-apple-darwin --release
-
-      - name: Archive macOS executable
-        run: mv target/x86_64-apple-darwin/release/cpu_benchmark ./cpu_benchmark_macos
-        if: ${{ success() }}
 
       - name: Save artifacts
         uses: actions/upload-artifact@v2
