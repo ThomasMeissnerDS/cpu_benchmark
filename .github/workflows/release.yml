@@ -60,12 +60,12 @@ jobs:
         run: sudo apt-get install -y cmake g++-multilib
 
       - name: Install osxcross
-        run: git clone --depth 1 https://github.com/tpoechtrager/osxcross /usr/local/osxcross && UNATTENDED=yes OSX_VERSION_MIN=10.7 /usr/local/osxcross/build.sh
+        run: git clone --depth 1 https://github.com/tpoechtrager/osxcross $HOME/osxcross && UNATTENDED=yes OSX_VERSION_MIN=10.7 $HOME/osxcross/build.sh
 
       - name: Build for macOS
         env:
-          PATH: ${{ env.OSXCROSS_PATH }}/target/bin:$PATH
-          SDKROOT: ${{ env.OSXCROSS_PATH }}/target/SDK/MacOSX10.7.sdk
+          PATH: $HOME/osxcross/target/bin:$PATH
+          SDKROOT: $HOME/osxcross/target/SDK/MacOSX10.7.sdk
         run: cargo build --target x86_64-apple-darwin --release
 
 
