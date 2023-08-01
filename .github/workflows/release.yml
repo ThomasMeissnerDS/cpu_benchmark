@@ -43,6 +43,9 @@ jobs:
         run: rustup target add x86_64-apple-darwin
         if: ${{ success() }}
 
+      - name: Debug List target contents
+        run: ls target/
+
       - name: Install macOS dependency
         run: sudo apt-get install -y cmake g++-multilib
 
