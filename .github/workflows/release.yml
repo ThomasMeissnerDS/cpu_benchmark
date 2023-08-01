@@ -49,6 +49,12 @@ jobs:
       - name: Debug List available Rust targets
         run: rustup target list
 
+      - name: Debug Check current target triple
+        run: rustc --print target-list
+
+      - name: Debug Check Cargo configuration
+        run: cargo --version; rustc --version; rustup show
+
       - name: Install macOS dependency
         run: sudo apt-get install -y cmake g++-multilib
 
