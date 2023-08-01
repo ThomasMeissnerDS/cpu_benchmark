@@ -60,7 +60,7 @@ jobs:
         run: sudo apt-get install -y cmake g++-multilib
 
       - name: Set up macOS cross-compilation using Docker
-        run: docker run --rm -v $PWD:/volume -w /volume rust:latest sh -c 'rustup target add x86_64-apple-darwin && apt-get update && apt-get install -y gcc && cargo build --target x86_64-apple-darwin --release'
+        run: docker run --rm -v $PWD:/volume -w /volume ekidd/rust-musl-builder:latest cargo build --target x86_64-apple-darwin --release
 
       - name: Archive macOS executable
         run: mv target/x86_64-apple-darwin/release/cpu_benchmark ./cpu_benchmark_macos
