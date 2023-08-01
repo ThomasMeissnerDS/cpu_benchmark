@@ -29,6 +29,9 @@ jobs:
       - name: Add Windows GNU target
         run: rustup target add x86_64-pc-windows-gnu
 
+      - name: Add macOS target
+        run: rustup target add x86_64-apple-darwin
+
       - name: Build for Windows
         run: cargo build --target x86_64-pc-windows-gnu --release
 
