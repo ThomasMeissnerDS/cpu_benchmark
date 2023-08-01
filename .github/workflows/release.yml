@@ -62,21 +62,8 @@ jobs:
       - name: Install osxcross
         run: git clone --depth 1 https://github.com/tpoechtrager/osxcross $HOME/osxcross && UNATTENDED=yes OSX_VERSION_MIN=10.7 $HOME/osxcross/build.sh
 
-      - name: Download and extract macOS SDK
-        run: |
-          SDK_URL="<DIRECT_DOWNLOAD_LINK_TO_MacOSX.sdk.zip>"
-          mkdir -p $HOME/osxcross/tarballs
-          curl -L $SDK_URL -o $HOME/osxcross/tarballs/MacOSX.sdk.zip
-          unzip -o $HOME/osxcross/tarballs/MacOSX.sdk.zip -d $HOME/osxcross/tarballs/
-
-      - name: Build for macOS
-        env:
-          PATH: $HOME/osxcross/target/bin:$PATH
-          SDKROOT: $HOME/osxcross/target/SDK/MacOSX10.7.sdk
-        run: cargo build --target x86_64-apple-darwin --release
-
-      - name: Check target contents (macOS)
-        run: ls target/x86_64-apple-darwin/release/
+      - name: Set up macOS cross-compilation using Docker
+        run: docker run --rm -v $PWD:/volume -w /volume ekidd/rust-musl-builder:nightly cargo build --target x86_64-apple-darwin --release
 
       - name: Archive macOS executable
         run: mv target/x86_64-apple-darwin/release/cpu_benchmark ./cpu_benchmark_macos
