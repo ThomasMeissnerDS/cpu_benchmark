@@ -1,40 +1,9 @@
 use indicatif::ProgressBar;
 use std::env;
 use std::f64;
-use std::fs;
 use std::thread::available_parallelism;
 use std::time::Instant;
 
-fn cpu_info() {
-    let cpuinfo = fs::read_to_string("/proc/cpuinfo").unwrap();
-    let mut cpu_num = 1;
-
-    for line in cpuinfo.lines() {
-        let parts: Vec<&str> = line.split(':').collect();
-        // /proc/cpuinfo is where linux stores cpu info...
-        // splitting the : so we get the record name & the value as an array
-        if parts.len() != 2 {
-            continue;
-        }
-
-        let key = parts[0].trim();
-        let value = parts[1].trim();
-
-        if key == "model name" {
-            println!("CPU {}:", cpu_num);
-            println!("\tCPU Name: {}", value);
-            cpu_num += 1;
-        } else if key == "cpu cores" {
-            let cores = value.parse::<i32>().unwrap();
-            println!("\tNumber of Cores: {}", cores);
-        } else if key == "cpu MHz" {
-            let mhz: f64 = value.parse().unwrap();
-            let ghz = mhz / 1000.0;
-            let ghz_rounded = (ghz * 100.0).round() / 100.0;
-            println!("\tClock Speed: {:.2} GHz", ghz_rounded);
-        }
-    }
-}
 
 fn add_one_loop(&n_loops: &u64) {
     for _in in 0..n_loops {
@@ -49,17 +18,16 @@ fn main() {
         Some(num_calcs_arg) => num_calcs_arg.trim().parse::<u64>().unwrap(),
         None => 400000000, // runs 100 times
     };
+    let num_iters: u64 = 200000;
     println!(
-        "Running {} calculations for 100 times split across all cores.",
-        &num_calcs
+        "Running {} calculations for {} times split across all cores.",
+        &num_calcs, &num_iters
     );
-    cpu_info();
 
     let available_cores: u64 = available_parallelism().unwrap().get() as u64; // get info how many threads we can use and use half of them
     let iter_per_core: u64 = num_calcs / available_cores;
 
     let now = Instant::now();
-    let num_iters: u64 = 200000;
 
     let bar = ProgressBar::new(num_iters);
     for _i in 0..num_iters {
