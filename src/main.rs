@@ -59,9 +59,10 @@ fn main() {
     let iter_per_core: u64 = num_calcs / available_cores;
 
     let now = Instant::now();
+    let num_iters: u64 = 200000;
 
-    let bar = ProgressBar::new(100);
-    for _i in 0..100 {
+    let bar = ProgressBar::new(num_iters);
+    for _i in 0..num_iters {
         let mut results = Vec::new();
         let mut threads = Vec::new();
         for _i in 0..available_cores {
