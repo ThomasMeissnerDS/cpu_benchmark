@@ -4,7 +4,6 @@ use std::f64;
 use std::thread::available_parallelism;
 use std::time::Instant;
 
-
 fn add_one_loop(&n_loops: &u64) {
     for _in in 0..n_loops {
         let _ = 100.0 * 100.0;
