@@ -23,7 +23,7 @@ fn main() {
         None => 400000000, // runs 100 times
     };
     let num_iters: u64 = 20000;
-    let total_calc: u64 = &num_calcs * &num_iters;
+    let total_calc: u64 = num_calcs * num_iters;
     println!(
         "Running {} calculations over {} iterations each with a total of {} calculations.",
         &num_calcs, &num_iters, &total_calc,
