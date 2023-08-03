@@ -12,8 +12,7 @@ pub fn factorial(num: u128) -> u128 {
 fn add_one_loop(&n_loops: &u64) {
     for _in in 0..n_loops {
         let _ = factorial(20);
-    };
-
+    }
 }
 
 fn main() {
