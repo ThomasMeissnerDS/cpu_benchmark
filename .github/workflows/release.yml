@@ -20,7 +20,7 @@ jobs:
         run: cargo build --release
 
       - name: Archive Linux executable
-        run: mv target/release/cpu_benchmark ./cpu_benchmark_linux
+        run: mv target/release/rust_mark ./rust_mark_linux
         if: ${{ success() }}
 
       - name: Install mingw
@@ -33,7 +33,7 @@ jobs:
         run: cargo build --target x86_64-pc-windows-gnu --release
 
       - name: Archive Windows executable
-        run: mv target/x86_64-pc-windows-gnu/release/cpu_benchmark.exe ./cpu_benchmark_windows.exe
+        run: mv target/x86_64-pc-windows-gnu/release/rust_mark.exe ./rust_mark_windows.exe
         if: ${{ success() }}
 
       - name: Debug List target contents
@@ -53,6 +53,6 @@ jobs:
         with:
           name: executables
           path: |
-            cpu_benchmark_linux
-            cpu_benchmark_windows.exe
-            cpu_benchmark_macos
+            rust_mark_linux
+            rust_mark_windows.exe
+            rust_mark_macos
